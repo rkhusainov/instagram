@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Instagram</string>
+    <string name="edit_profile">Edit profile</string>
 </resources>
