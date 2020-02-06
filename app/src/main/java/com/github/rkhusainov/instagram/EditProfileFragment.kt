@@ -24,6 +24,7 @@ class EditProfileFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         close_image.setOnClickListener {
             fragmentManager?.popBackStack()
         }
