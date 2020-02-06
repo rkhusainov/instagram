@@ -3,6 +3,7 @@ package com.github.rkhusainov.instagram
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.bottom_navigation_view.*
 
 class MainActivity : AppCompatActivity() {
@@ -12,6 +13,17 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val auth = FirebaseAuth.getInstance()
+        auth.signInWithEmailAndPassword("rudyiceage@gmail.com", "password")
+            .addOnCompleteListener{
+                if (it.isSuccessful) {
+                    Log.d(TAG, "SingIn: success")
+                } else {
+                    Log.e(TAG,"signIn: failure", it.exception)
+                }
+            }
+
 
         if (savedInstanceState == null) {
             supportFragmentManager
