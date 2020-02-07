@@ -1,5 +1,6 @@
 package com.github.rkhusainov.instagram
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -9,12 +10,15 @@ import kotlinx.android.synthetic.main.bottom_navigation_view.*
 class MainActivity : AppCompatActivity() {
 
     private val TAG = "HomeActivity"
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val auth = FirebaseAuth.getInstance()
+        auth = FirebaseAuth.getInstance()
+        auth.signOut()
+/*
         auth.signInWithEmailAndPassword("rudyiceage@gmail.com", "password")
             .addOnCompleteListener{
                 if (it.isSuccessful) {
@@ -23,6 +27,8 @@ class MainActivity : AppCompatActivity() {
                     Log.e(TAG,"signIn: failure", it.exception)
                 }
             }
+*/
+
 
 
         if (savedInstanceState == null) {
@@ -82,5 +88,13 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (auth.currentUser == null) {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+        }
     }
 }
