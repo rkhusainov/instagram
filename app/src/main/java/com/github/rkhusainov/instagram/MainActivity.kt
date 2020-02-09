@@ -16,7 +16,6 @@ class MainActivity : AppCompatActivity(), CallbackListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         auth = FirebaseAuth.getInstance()
 /*
         auth.signInWithEmailAndPassword("rudyiceage@gmail.com", "password")
