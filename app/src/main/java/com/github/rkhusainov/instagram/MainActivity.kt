@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.bottom_navigation_view.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), CallbackListener {
 
     private val TAG = "HomeActivity"
     private lateinit var auth: FirebaseAuth
@@ -16,8 +16,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
         auth = FirebaseAuth.getInstance()
-        auth.signOut()
 /*
         auth.signInWithEmailAndPassword("rudyiceage@gmail.com", "password")
             .addOnCompleteListener{
@@ -28,8 +28,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 */
-
-
 
         if (savedInstanceState == null) {
             supportFragmentManager
@@ -87,11 +85,19 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
     }
 
     override fun onStart() {
         super.onStart()
+        if (auth.currentUser == null) {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+        }
+    }
+
+    override fun signOut() {
+        auth.signOut()
+
         if (auth.currentUser == null) {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
