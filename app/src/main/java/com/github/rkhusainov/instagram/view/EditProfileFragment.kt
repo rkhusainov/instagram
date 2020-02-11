@@ -76,15 +76,7 @@ class EditProfileFragment : Fragment(), PasswordDialog.Listener {
     }
 
     private fun updateProfile() {
-        pendingUser = User(
-            name = name_input.text.toString(),
-            username = username_input.text.toString(),
-            website = website_input.text.toString(),
-            bio = bio_input.text.toString(),
-            email = email_input.text.toString(),
-            phone = phone_input.text.toString().toLong()
-        )
-
+        pendingUser = readInputs()
         val error = validate(pendingUser)
         if (error == null) {
             if (pendingUser.email == this.user.email) {
@@ -94,28 +86,44 @@ class EditProfileFragment : Fragment(), PasswordDialog.Listener {
                 val passwordDialog = PasswordDialog()
                 passwordDialog.setTargetFragment(this, 0)
                 passwordDialog.show(fm, "password_dialog")
-//                PasswordDialog().show(fragmentManager!!, "password_dialog")
-
             }
         } else {
             Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
         }
     }
 
+    private fun readInputs(): User {
+        val phoneStr = phone_input.text.toString()
+        return User(
+            name = name_input.text.toString(),
+            username = username_input.text.toString(),
+            website = website_input.text.toString(),
+            bio = bio_input.text.toString(),
+            email = email_input.text.toString(),
+            phone = if (phoneStr.isEmpty()) 0 else phoneStr.toLong()
+        )
+    }
+
     override fun onPasswordConfirm(password: String) {
-        val credential = EmailAuthProvider.getCredential(user.email, password)
-        auth.currentUser!!.reauthenticate(credential).addOnCompleteListener {
-            if (it.isSuccessful) {
-                auth.currentUser!!.updateEmail(pendingUser.email).addOnCompleteListener{
-                    if (it.isSuccessful) {
-                        updateUser(pendingUser)
-                    } else {
-                Toast.makeText(context, it.exception!!.message, Toast.LENGTH_SHORT).show()
+        if (password.isNotEmpty()) {
+            val credential = EmailAuthProvider.getCredential(user.email, password)
+            auth.currentUser!!.reauthenticate(credential).addOnCompleteListener {
+                if (it.isSuccessful) {
+                    auth.currentUser!!.updateEmail(pendingUser.email).addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            updateUser(pendingUser)
+                        } else {
+                            Toast.makeText(context, it.exception!!.message, Toast.LENGTH_SHORT)
+                                .show()
+                        }
                     }
+                } else {
+                    Toast.makeText(context, it.exception!!.message, Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                Toast.makeText(context, it.exception!!.message, Toast.LENGTH_SHORT).show()
             }
+
+        } else {
+            Toast.makeText(context, "You should enter your password", Toast.LENGTH_SHORT).show()
         }
     }
 
