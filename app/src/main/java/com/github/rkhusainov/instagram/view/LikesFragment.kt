@@ -1,4 +1,4 @@
-package com.github.rkhusainov.instagram
+package com.github.rkhusainov.instagram.view
 
 
 import android.os.Bundle
@@ -6,11 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.github.rkhusainov.instagram.R
 
 class LikesFragment : Fragment() {
 
     companion object {
-        fun newInstance(): LikesFragment = LikesFragment()
+        fun newInstance(): LikesFragment =
+            LikesFragment()
     }
 
     override fun onCreateView(

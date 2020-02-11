@@ -1,4 +1,4 @@
-package com.github.rkhusainov.instagram
+package com.github.rkhusainov.instagram.view
 
 import android.content.ContentValues.TAG
 import android.os.Bundle
@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.github.rkhusainov.instagram.R
 import com.github.rkhusainov.instagram.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -46,9 +47,8 @@ class EditProfileFragment : Fragment() {
 
     private fun getDataFromFirebase() {
         val auth = FirebaseAuth.getInstance()
-        val user = auth.currentUser
         val database = FirebaseDatabase.getInstance().reference
-        database.child("users").child(user!!.uid)
+        database.child("users").child(auth.currentUser!!.uid)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(data: DataSnapshot) {
                     val user = data.getValue(User::class.java)
