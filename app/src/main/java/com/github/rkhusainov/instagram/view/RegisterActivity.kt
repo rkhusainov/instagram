@@ -10,9 +10,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.github.rkhusainov.instagram.R
-import com.github.rkhusainov.instagram.coordinateBtnAndInputs
 import com.github.rkhusainov.instagram.model.User
-import com.github.rkhusainov.instagram.showToast
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -141,7 +139,10 @@ class EmailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        coordinateBtnAndInputs(next_btn, email_input)
+        coordinateBtnAndInputs(
+            next_btn,
+            email_input
+        )
 
         next_btn.setOnClickListener {
             val email = email_input.text.toString()
@@ -174,7 +175,11 @@ class NamePassFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        coordinateBtnAndInputs(register_btn, full_name_input, password_input)
+        coordinateBtnAndInputs(
+            register_btn,
+            full_name_input,
+            password_input
+        )
 
         register_btn.setOnClickListener {
             val fullName = full_name_input.text.toString()

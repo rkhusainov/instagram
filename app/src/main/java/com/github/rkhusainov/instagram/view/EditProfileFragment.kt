@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -105,7 +106,11 @@ class EditProfileFragment : Fragment(), PasswordDialog.Listener {
                         database.child("users/$uid/photo").setValue(uri.toString())
                             .addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
-                                    Log.d(TAG, "OnActivityResult: photo saved successfully")
+                                    user = user.copy(photo = uri.toString())
+
+                                    if (this@EditProfileFragment.isVisible) {
+                                        profile_image.loadUserPhoto(user.photo)
+                                    }
                                 } else {
                                     Toast.makeText(
                                         context,
@@ -123,6 +128,7 @@ class EditProfileFragment : Fragment(), PasswordDialog.Listener {
 
     }
 
+
     private fun getDataFromFirebase() {
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
@@ -136,7 +142,9 @@ class EditProfileFragment : Fragment(), PasswordDialog.Listener {
                     website_input.setText(user.website, TextView.BufferType.EDITABLE)
                     bio_input.setText(user.bio, TextView.BufferType.EDITABLE)
                     email_input.setText(user.email, TextView.BufferType.EDITABLE)
-                    phone_input.setText(user.phone.toString(), TextView.BufferType.EDITABLE)
+                    phone_input.setText(user.phone?.toString(), TextView.BufferType.EDITABLE)
+
+                    profile_image.loadUserPhoto(user.photo)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -163,14 +171,13 @@ class EditProfileFragment : Fragment(), PasswordDialog.Listener {
     }
 
     private fun readInputs(): User {
-        val phoneStr = phone_input.text.toString()
         return User(
             name = name_input.text.toString(),
             username = username_input.text.toString(),
-            website = website_input.text.toString(),
-            bio = bio_input.text.toString(),
             email = email_input.text.toString(),
-            phone = if (phoneStr.isEmpty()) 0 else phoneStr.toLong()
+            website = website_input.text.toStringOrNull(),
+            bio = bio_input.text.toStringOrNull(),
+            phone = phone_input.text.toString().toLongOrNull()
         )
     }
 
@@ -198,7 +205,7 @@ class EditProfileFragment : Fragment(), PasswordDialog.Listener {
     }
 
     private fun updateUser(user: User) {
-        val updatesMap = mutableMapOf<String, Any>()
+        val updatesMap = mutableMapOf<String, Any?>()
         if (user.name != this.user.name) updatesMap["name"] = user.name
         if (user.username != this.user.username) updatesMap["username"] = user.username
         if (user.website != this.user.website) updatesMap["website"] = user.website
