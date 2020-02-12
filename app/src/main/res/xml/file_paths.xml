@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen>
+    <paths>
+        <external-files-path
+            name="images"
+            path="Pictures" />
+    </paths>
+
+</androidx.preference.PreferenceScreen>
