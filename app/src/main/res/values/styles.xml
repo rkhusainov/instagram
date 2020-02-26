@@ -41,8 +41,8 @@
         <item name="android:textColor">@color/blue</item>
         <item name="android:layout_height">@dimen/toolbar_height</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="paddingStart">10dp</item>
-        <item name="paddingEnd">10dp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
     </style>
 
     <style name="toolbar_title">

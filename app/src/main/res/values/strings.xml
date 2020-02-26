@@ -8,4 +8,6 @@
     <string name="share_to">Share to</string>
     <string name="back_image">Back image</string>
     <string name="enter_a_caption_here">Enter a caption here ...</string>
+    <string name="image">image</string>
+    <string name="share_image">Share image</string>
 </resources>

@@ -28,11 +28,11 @@
             <ImageView
                 android:id="@+id/more_image"
                 style="@style/toolbar_image"
+                android:contentDescription="@string/more_image"
                 android:src="@drawable/ic_more"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:contentDescription="@string/more_image" />
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -122,5 +122,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="5"
         app:layout_constraintStart_toEndOf="@+id/profile_image" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/images_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/top_border_gray"
+        app:layout_constraintTop_toBottomOf="@id/edit_profile_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

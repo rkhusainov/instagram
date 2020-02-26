@@ -13,10 +13,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.github.rkhusainov.instagram.R
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.fragment_share.*
 import java.io.File
 import java.text.SimpleDateFormat
@@ -27,6 +33,11 @@ class ShareFragment : Fragment() {
     private val TAKE_PICTURE_REQUEST_CODE = 1
     private lateinit var imageUri: Uri
     val simpleDateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US)
+
+    private lateinit var database: DatabaseReference
+    private lateinit var auth: FirebaseAuth
+    private lateinit var storage: StorageReference
+
 
     private lateinit var itemListener: MenuItemListener
 
@@ -50,6 +61,9 @@ class ShareFragment : Fragment() {
     ): View? {
         Log.d(ContentValues.TAG, "onCreateView: 2")
         itemListener.menuItemCallback(2)
+        auth = FirebaseAuth.getInstance()
+        database = FirebaseDatabase.getInstance().reference
+        storage = FirebaseStorage.getInstance().reference
         return inflater.inflate(R.layout.fragment_share, container, false)
     }
 
@@ -60,6 +74,10 @@ class ShareFragment : Fragment() {
 
         back_image.setOnClickListener {
             fragmentManager?.popBackStack()
+        }
+
+        share_text.setOnClickListener {
+            share()
         }
     }
 
@@ -93,5 +111,34 @@ class ShareFragment : Fragment() {
             ".jpg",
             storageDir
         )
+    }
+
+    private fun share() {
+        val uid = auth.currentUser!!.uid
+        storage.child("users").child(uid).child("images").child(imageUri.lastPathSegment!!)
+            .putFile(imageUri)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    it.result!!.metadata!!.reference!!.downloadUrl.addOnSuccessListener {
+                            database.child("images").child(uid).push()
+                                .setValue(it.toString())
+                                .addOnCompleteListener {
+                                    if (it.isSuccessful) {
+                                        fragmentManager
+                                            ?.beginTransaction()
+                                            ?.replace(R.id.fragment_container, ProfileFragment.newInstance())
+                                            ?.commit()
+                                    } else {
+                                        Toast.makeText(
+                                            context, it.exception!!.message!!, Toast.LENGTH_SHORT
+                                        ).show();
+                                    }
+                                }
+
+                        }
+                } else {
+                    Toast.makeText(context, it.exception!!.message!!, Toast.LENGTH_SHORT).show();
+                }
+            }
     }
 }

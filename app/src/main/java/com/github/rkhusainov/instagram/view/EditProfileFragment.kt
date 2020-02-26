@@ -128,7 +128,6 @@ class EditProfileFragment : Fragment(), PasswordDialog.Listener {
 
     }
 
-
     private fun getDataFromFirebase() {
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference

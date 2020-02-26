@@ -31,8 +31,6 @@ class HomeFragment : Fragment() {
         if (context is MenuItemListener) {
             itemListener = context
         }
-
-
     }
 
     override fun onCreateView(

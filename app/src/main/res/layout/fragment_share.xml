@@ -39,12 +39,11 @@
             <TextView
                 android:id="@+id/share_text"
                 style="@style/toolbar_text"
-                android:contentDescription="@string/more_image"
+                android:contentDescription="@string/share_image"
                 android:text="@string/share"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                />
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
