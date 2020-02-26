@@ -19,8 +19,8 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/username_text"
                 style="@style/toolbar_title"
-                android:text="rinat.khusainov"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -31,7 +31,8 @@
                 android:src="@drawable/ic_more"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/more_image" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -44,7 +45,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:src="@drawable/android_picture"
+        android:src="@drawable/person"
         app:civ_border_color="@color/gray"
         app:civ_border_width="1dp"
         app:layout_constraintDimensionRatio="1:1"

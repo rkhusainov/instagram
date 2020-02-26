@@ -1,14 +1,30 @@
 package com.github.rkhusainov.instagram.view
 
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.github.rkhusainov.instagram.R
+import kotlinx.android.synthetic.main.fragment_share.*
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ShareFragment : Fragment() {
+
+    private val TAKE_PICTURE_REQUEST_CODE = 1
+    private lateinit var imageUri: Uri
+    val simpleDateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US)
+
 
     companion object {
         fun newInstance(): ShareFragment =
@@ -20,5 +36,43 @@ class ShareFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_share, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        takeCameraPicture()
+
+        back_image.setOnClickListener {
+            fragmentManager?.popBackStack()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == TAKE_PICTURE_REQUEST_CODE && resultCode == RESULT_OK) {
+            Glide.with(this).load(imageUri).centerCrop().into(post_image)
+        }
+    }
+
+    private fun takeCameraPicture() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if (intent.resolveActivity(context!!.packageManager) != null) {
+            val imageFile = createImageFile()
+            imageUri = FileProvider.getUriForFile(
+                context!!,
+                "com.github.rkhusainov.instagram.fileprovider", imageFile
+            )
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
+            startActivityForResult(intent, TAKE_PICTURE_REQUEST_CODE)
+        }
+    }
+
+    private fun createImageFile(): File {
+        val storageDir = context!!.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+        return File.createTempFile(
+            "JPEG_${simpleDateFormat.format(Date())}_",
+            ".jpg",
+            storageDir
+        )
     }
 }

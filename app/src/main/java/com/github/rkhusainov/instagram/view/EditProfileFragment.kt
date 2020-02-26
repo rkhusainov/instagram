@@ -137,12 +137,12 @@ class EditProfileFragment : Fragment(), PasswordDialog.Listener {
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(data: DataSnapshot) {
                     user = data.getValue(User::class.java)!!
-                    name_input.setText(user.name, TextView.BufferType.EDITABLE)
-                    username_input.setText(user.username, TextView.BufferType.EDITABLE)
-                    website_input.setText(user.website, TextView.BufferType.EDITABLE)
-                    bio_input.setText(user.bio, TextView.BufferType.EDITABLE)
-                    email_input.setText(user.email, TextView.BufferType.EDITABLE)
-                    phone_input.setText(user.phone?.toString(), TextView.BufferType.EDITABLE)
+                    name_input.setText(user.name)
+                    username_input.setText(user.username)
+                    website_input.setText(user.website)
+                    bio_input.setText(user.bio)
+                    email_input.setText(user.email)
+                    phone_input.setText(user.phone?.toString())
 
                     profile_image.loadUserPhoto(user.photo)
                 }
