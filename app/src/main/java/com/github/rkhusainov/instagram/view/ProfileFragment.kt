@@ -65,7 +65,9 @@ class ProfileFragment : Fragment() {
                 override fun onDataChange(data: DataSnapshot) {
                     val images = data.children.map { it.getValue(String::class.java)!! }
                     imagesAdapter = ImagesAdapter(images + images + images)
-                    images_recycler.adapter = imagesAdapter
+                    if (images_recycler != null) {
+                        images_recycler.adapter = imagesAdapter
+                    }
                     imagesAdapter.updateRecycler()
                 }
 
