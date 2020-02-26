@@ -1,6 +1,7 @@
 package com.github.rkhusainov.instagram.view
 
 import android.content.ContentValues
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,9 +20,19 @@ class ProfileFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var user: User
 
+    private lateinit var itemListener: MenuItemListener
+
     companion object {
         fun newInstance(): ProfileFragment {
             return ProfileFragment()
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        if (context is MenuItemListener) {
+            itemListener = context
         }
     }
 
@@ -29,6 +40,9 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d(ContentValues.TAG, "onCreateView: 4")
+        itemListener.menuItemCallback(4)
+
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
 

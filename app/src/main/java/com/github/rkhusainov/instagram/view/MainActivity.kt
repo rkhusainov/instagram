@@ -9,10 +9,11 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.bottom_navigation_view.*
 
 class MainActivity : AppCompatActivity(),
-    CallbackListener {
+    CallbackListener, MenuItemListener {
 
     private val TAG = "HomeActivity"
     private lateinit var auth: FirebaseAuth
+    private var navNumber:Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +32,18 @@ class MainActivity : AppCompatActivity(),
                 .commit()
         }
 
+        bottomNavigationViewMenu()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (auth.currentUser == null) {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+        }
+    }
+
+    private fun bottomNavigationViewMenu() {
         bottom_navigation_view.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.nav_item_home -> {
@@ -93,20 +106,20 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        if (auth.currentUser == null) {
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
-        }
-    }
-
     override fun signOut() {
         auth.signOut()
 
         if (auth.currentUser == null) {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
+        }
+    }
+
+    override fun menuItemCallback(item: Int) {
+        navNumber = item
+
+        if (bottom_navigation_view != null) {
+            bottom_navigation_view.menu.getItem(navNumber).isChecked = true
         }
     }
 }

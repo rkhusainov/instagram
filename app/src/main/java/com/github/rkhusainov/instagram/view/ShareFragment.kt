@@ -2,11 +2,14 @@ package com.github.rkhusainov.instagram.view
 
 
 import android.app.Activity.RESULT_OK
+import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,16 +28,28 @@ class ShareFragment : Fragment() {
     private lateinit var imageUri: Uri
     val simpleDateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US)
 
+    private lateinit var itemListener: MenuItemListener
 
     companion object {
         fun newInstance(): ShareFragment =
             ShareFragment()
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        if (context is MenuItemListener) {
+            itemListener = context
+        }
+
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d(ContentValues.TAG, "onCreateView: 2")
+        itemListener.menuItemCallback(2)
         return inflater.inflate(R.layout.fragment_share, container, false)
     }
 
@@ -49,8 +64,12 @@ class ShareFragment : Fragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == TAKE_PICTURE_REQUEST_CODE && resultCode == RESULT_OK) {
-            Glide.with(this).load(imageUri).centerCrop().into(post_image)
+        if (requestCode == TAKE_PICTURE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Glide.with(this).load(imageUri).centerCrop().into(post_image)
+            } else {
+                fragmentManager?.popBackStack()
+            }
         }
     }
 
