@@ -68,7 +68,6 @@ class ProfileFragment : Fragment() {
                     if (images_recycler != null) {
                         images_recycler.adapter = imagesAdapter
                     }
-                    imagesAdapter.updateRecycler()
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -114,10 +113,6 @@ class ImagesAdapter(private val images: List<String>) :
         return ImagesViewHolder(imageView)
     }
 
-    fun updateRecycler() {
-        notifyDataSetChanged()
-    }
-
     override fun getItemCount(): Int = images.size
 
     override fun onBindViewHolder(holder: ImagesViewHolder, position: Int) {
@@ -128,9 +123,7 @@ class ImagesAdapter(private val images: List<String>) :
         Glide.with(this).load(image).centerCrop().into(this)
     }
 
-    class ImagesViewHolder(val image: ImageView) : RecyclerView.ViewHolder(image) {
-
-    }
+    class ImagesViewHolder(val image: ImageView) : RecyclerView.ViewHolder(image)
 }
 
 class SquareImageView(context: Context, attributeSet: AttributeSet) :

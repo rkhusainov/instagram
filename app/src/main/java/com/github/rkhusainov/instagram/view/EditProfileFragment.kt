@@ -7,12 +7,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -46,20 +44,27 @@ class EditProfileFragment : Fragment(), PasswordDialog.Listener {
         }
     }
 
-    init {
-        getDataFromFirebase()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        firebaseInit()
+
         return inflater.inflate(R.layout.fragment_edit_profile, container, false)
+    }
+
+    private fun firebaseInit() {
+        auth = FirebaseAuth.getInstance()
+        database = FirebaseDatabase.getInstance().reference
+        storage = FirebaseStorage.getInstance().reference
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        getDataFromFirebase()
 
         close_image.setOnClickListener {
             fragmentManager?.popBackStack()
@@ -129,9 +134,6 @@ class EditProfileFragment : Fragment(), PasswordDialog.Listener {
     }
 
     private fun getDataFromFirebase() {
-        auth = FirebaseAuth.getInstance()
-        database = FirebaseDatabase.getInstance().reference
-        storage = FirebaseStorage.getInstance().reference
         database.child("users").child(auth.currentUser!!.uid)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(data: DataSnapshot) {

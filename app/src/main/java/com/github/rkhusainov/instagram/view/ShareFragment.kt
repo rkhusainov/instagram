@@ -18,9 +18,10 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.github.rkhusainov.instagram.R
+import com.github.rkhusainov.instagram.model.FeedPost
+import com.github.rkhusainov.instagram.model.User
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.fragment_share.*
@@ -32,6 +33,7 @@ class ShareFragment : Fragment() {
 
     private val TAKE_PICTURE_REQUEST_CODE = 1
     private lateinit var imageUri: Uri
+    private lateinit var user: User
     val simpleDateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US)
 
     private lateinit var database: DatabaseReference
@@ -61,10 +63,27 @@ class ShareFragment : Fragment() {
     ): View? {
         Log.d(ContentValues.TAG, "onCreateView: 2")
         itemListener.menuItemCallback(2)
+
+        firebaseInit()
+
+        val currentUser = database.child("users").child(auth.currentUser!!.uid)
+        currentUser.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(data: DataSnapshot) {
+                user = data.getValue(User::class.java)!!
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e(ContentValues.TAG, "onCancelled: ", error.toException())
+            }
+
+        })
+        return inflater.inflate(R.layout.fragment_share, container, false)
+    }
+
+    private fun firebaseInit() {
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
         storage = FirebaseStorage.getInstance().reference
-        return inflater.inflate(R.layout.fragment_share, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -119,26 +138,50 @@ class ShareFragment : Fragment() {
             .putFile(imageUri)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    it.result!!.metadata!!.reference!!.downloadUrl.addOnSuccessListener {
-                            database.child("images").child(uid).push()
-                                .setValue(it.toString())
-                                .addOnCompleteListener {
-                                    if (it.isSuccessful) {
-                                        fragmentManager
-                                            ?.beginTransaction()
-                                            ?.replace(R.id.fragment_container, ProfileFragment.newInstance())
-                                            ?.commit()
-                                    } else {
-                                        Toast.makeText(
-                                            context, it.exception!!.message!!, Toast.LENGTH_SHORT
-                                        ).show();
-                                    }
+                    it.result!!.metadata!!.reference!!.downloadUrl.addOnSuccessListener { url ->
+                        database.child("images").child(uid).push()
+                            .setValue(url.toString())
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    database.child("feed-posts").child(uid).push()
+                                        .setValue(makeFeedPost(uid, url)).addOnCompleteListener {
+                                            if (it.isSuccessful) {
+                                                fragmentManager
+                                                    ?.beginTransaction()
+                                                    ?.replace(
+                                                        R.id.fragment_container,
+                                                        ProfileFragment.newInstance()
+                                                    )
+                                                    ?.commit()
+                                            }
+                                        }
+                                } else {
+                                    Toast.makeText(
+                                        context, it.exception!!.message!!, Toast.LENGTH_SHORT
+                                    ).show();
                                 }
+                            }
 
-                        }
+                    }
                 } else {
                     Toast.makeText(context, it.exception!!.message!!, Toast.LENGTH_SHORT).show();
                 }
             }
     }
+
+    private fun makeFeedPost(
+        uid: String,
+        url: Uri
+    ): FeedPost {
+        return FeedPost(
+            uid = uid,
+            username = user.username,
+            image = url.toString(),
+            caption = caption_edit_text.toString(),
+            photo = user.photo
+        )
+    }
 }
+
+
+

@@ -10,4 +10,8 @@
     <string name="enter_a_caption_here">Enter a caption here ...</string>
     <string name="image">image</string>
     <string name="share_image">Share image</string>
+    <string name="icon_image">icon_image</string>
+    <string name="post_image">Post image</string>
+    <string name="likes_image">Likes image</string>
+    <string name="comment_image">Comment image</string>
 </resources>

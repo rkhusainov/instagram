@@ -21,7 +21,7 @@
 
             <ImageView
                 android:id="@+id/back_image"
-                style="@style/toolbar_image"
+                style="@style/icon"
                 android:contentDescription="@string/back_image"
                 android:src="@drawable/ic_back"
                 app:layout_constraintBottom_toBottomOf="parent"
